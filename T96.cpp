@@ -1,46 +1,48 @@
-/************************
- * LeetCode 第154题
- * 寻找旋转排序数组中的最小值
- * 一个按照升序排列的数组在预先未知的某个点上进行了旋转
- * 如：数组 [0,1,2,4,5,6,7] 可能变为 [4,5,6,7,0,1,2]
- * 找出其中最小的元素
- * 2020-07-22
- ************************/
-# include <iostream>
-# include <vector>
-# include <iterator>
+/*************************
+ * LeetCode 第96题
+ * 给定一个整数n，求以1,2....n节点构成的二叉搜索树有多少种？
+ * 2020-07-21
+ *************************/
+#include <iostream>
+#include <vector>
 using namespace std;
 
 class Solution {
 public:
-    int findMin(vector<int>& nums) {
-        vector<int>::iterator iter1 = nums.begin();
-        vector<int>::iterator iter2 = nums.end() - 1;
+    int numTrees(int n) {
+        if(n == 0){
+            return 0;
+        }
 
-        for(;iter1<iter2;iter1++){
-            if((*iter1) > (*(iter1 + 1)))
-                break;
+        if(a.size() >= n){
+            return a.begin()[n-1];
         }
-        if(iter1 == iter2){
-            iter1 = nums.begin();
-            return *(iter1);
+        if(a.size() == 0){
+            a.push_back(1);    // 一个节点的搜索二叉树有一种
         }
-        else {
-            return *(iter1 + 1);
+        for(int i = a.size(); i<n; i++){    // i 为数组a的下标
+            int numNodes = i + 1;
+            int sum = 2 * a[i-1];   // 1为根节点或者n为根节点
+            for(int j =2;j<numNodes;j++){
+                sum = sum + a[j-2]*a[numNodes-j-1]; // j为根节点，左边有j-1个点，右边有numNodes-j个点
+            }
+            a.push_back(sum);
         }
+        return a[n-1];
+
     }
+private:
+    vector<int> a;
 };
-
 /*******************************
- * 思路一：找出序列中第一个变小的元素即可
- * 思路二：二分查找，注意可能有重复的元素
- *******************************/
-
+ * 思路：注意二叉搜索树左右子树的大小特性，
+ * 遍历1到n的数字i，以i为根节点，将1到i-1
+ * 作为左子树，i+1到n作为右子树，便可以递归
+ * 解决该问题。
+ * 第二种方法：直接利用数学上的结论：卡特兰数。
+ ******************************/
 int main(){
     Solution s;
-    vector<int> n;
-    n.push_back(3);
-    n.push_back(1);
-    cout << s.findMin(n) << endl;
+    cout << s.numTrees(3) << endl;;
     return 0;
 }
